@@ -1,0 +1,82 @@
+export function pauthWithCustomToken (db) {
+  return (token, options) => new Promise((resolve, reject) => {
+    db.authWithCustomToken(token, (err, authData) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(authData)
+      }
+    }, options)
+  })
+}
+
+export function pget (db) {
+  return path => {
+    const ref = path.once ? path : db.child(path)
+    return new Promise((resolve, reject) => {
+      ref.once('value', resolve, reject)
+    })
+  }
+}
+
+export function pval (db) {
+  return path => db.pget(path)
+  .then(snap => {
+    const val = snap.val()
+    if (val === null) {
+      throw new Error('No value at this path')
+    }
+    return val
+  })
+}
+
+export function ppush (db) {
+  return (path, value) => {
+    const ref = path.push ? path : db.child(path)
+    if (arguments.length < 2) {
+      return Promise.resolve(ref.push())
+    }
+    return new Promise((resolve, reject) => {
+      ref.push(value, err => err ? reject(err) : resolve())
+    })
+  }
+}
+
+export function pset (db) {
+  return (path, value) => {
+    const ref = path.set ? path : db.child(path)
+    return new Promise((resolve, reject) => {
+      ref.set(value, err => err ? reject(err) : resolve())
+    })
+  }
+}
+
+export function pupdate (db) {
+  return (path, value) => {
+    const ref = path.update ? path : db.child(path)
+    return new Promise((resolve, reject) => {
+      ref.update(value, err => err ? reject(err) : resolve())
+    })
+  }
+}
+export function premove (db) {
+  return path => {
+    const ref = path.remove ? path : db.child(path)
+    return new Promise((resolve, reject) => {
+      ref.remove(err => err ? reject(err) : resolve())
+    })
+  }
+}
+
+export default function promisifyFirebase (db) {
+  [
+    pauthWithCustomToken,
+    pget,
+    pval,
+    ppush,
+    pset,
+    pupdate,
+    premove
+  ].forEach(fn => db[fn.name] = fn(db))
+  return db
+}
