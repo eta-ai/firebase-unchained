@@ -51,6 +51,17 @@ export function pset (db) {
   }
 }
 
+function psetWithPriority (db) {
+  return function (path, value, priority) {
+    var ref = path.setWithPriority ? path : db.child(path)
+    return new Promise(function (resolve, reject) {
+      ref.setWithPriority(value, priority, function (err) {
+        return err ? reject(err) : resolve()
+      })
+    })
+  }
+}
+
 export function pupdate (db) {
   return (path, value) => {
     const ref = path.update ? path : db.child(path)
@@ -75,6 +86,7 @@ export default function promisifyFirebase (db) {
     pval,
     ppush,
     pset,
+    psetWithPriority,
     pupdate,
     premove
   ].forEach(fn => db[fn.name] = fn(db))
