@@ -9,8 +9,11 @@
   },
   "scripts": {
     "build": "babel src -d lib",
+    "faucet": "npm run tape | faucet",
     "prepublish": "npm run build",
-    "test": "standard && babel-tape-runner tests/**/*.js | faucet"
+    "standard": "standard",
+    "tape": "babel-tape-runner 'tests/**/*.js'",
+    "test": "npm run faucet && npm run standard"
   },
   "author": "Seggy Umboh <sumboh@eta.ai>",
   "license": "ISC",
