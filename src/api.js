@@ -11,7 +11,7 @@ export function pauthWithCustomToken (db) {
 }
 
 export function pget (db) {
-  return path => {
+  return (path) => {
     const ref = path.once ? path : db.child(path)
     return new Promise((resolve, reject) => {
       ref.once('value', resolve, reject)
@@ -20,28 +20,28 @@ export function pget (db) {
 }
 
 export function pval (db) {
-  return path => db.pget(path)
-  .then(snap => {
-    const val = snap.val()
-    if (val === null) {
-      throw new Error('No value at this path')
-    }
-    return val
-  })
+  return (path) => db.pget(path)
+    .then((snap) => {
+      const val = snap.val()
+      if (val === null) {
+        throw new Error('No value at this path')
+      }
+      return val
+    })
 }
 
 export function parray (db) {
-  return path => db.pget(path)
-  .then(snap => {
-    if (!snap.hasChildren()) {
-      throw new Error('No child value at this path')
-    }
-    const results = []
-    snap.forEach((childSnap) => {
-      results.push(childSnap.val())
+  return (path) => db.pget(path)
+    .then((snap) => {
+      if (!snap.hasChildren()) {
+        throw new Error('No child value at this path')
+      }
+      const results = []
+      snap.forEach((childSnap) => {
+        results.push(childSnap.val())
+      })
+      return results
     })
-    return results
-  })
 }
 
 export function ppush (db) {
@@ -51,7 +51,7 @@ export function ppush (db) {
       return Promise.resolve(ref.push())
     }
     return new Promise((resolve, reject) => {
-      ref.push(value, err => err ? reject(err) : resolve())
+      ref.push(value, (err) => err ? reject(err) : resolve())
     })
   }
 }
@@ -60,7 +60,7 @@ export function pset (db) {
   return (path, value) => {
     const ref = path.set ? path : db.child(path)
     return new Promise((resolve, reject) => {
-      ref.set(value, err => err ? reject(err) : resolve())
+      ref.set(value, (err) => err ? reject(err) : resolve())
     })
   }
 }
@@ -80,16 +80,16 @@ export function pupdate (db) {
   return (path, value) => {
     const ref = path.update ? path : db.child(path)
     return new Promise((resolve, reject) => {
-      ref.update(value, err => err ? reject(err) : resolve())
+      ref.update(value, (err) => err ? reject(err) : resolve())
     })
   }
 }
 
 export function premove (db) {
-  return path => {
+  return (path) => {
     const ref = path.remove ? path : db.child(path)
     return new Promise((resolve, reject) => {
-      ref.remove(err => err ? reject(err) : resolve())
+      ref.remove((err) => err ? reject(err) : resolve())
     })
   }
 }
