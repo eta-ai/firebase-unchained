@@ -84,6 +84,7 @@ export function pupdate (db) {
     })
   }
 }
+
 export function premove (db) {
   return path => {
     const ref = path.remove ? path : db.child(path)
@@ -93,8 +94,16 @@ export function premove (db) {
   }
 }
 
+export function generateId (db) {
+  return (path = '/') => {
+    const ref = path.push ? path : db.child(path)
+    return ref.push().key()
+  }
+}
+
 export default function promisifyFirebase (db) {
   [
+    generateId,
     pauthWithCustomToken,
     pget,
     pval,
