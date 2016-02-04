@@ -1,14 +1,13 @@
 import test from 'tape'
 
-import * as firebaseUnchained from '../src'
-
-const { default: promisify, ...promisedFns } = firebaseUnchained
+import promisify from '../src'
+import * as promisedFns from '../src/api'
 
 test('promisify adds methods to object', t => {
   const input = {}
   const output = promisify(input)
-  for (let fn in promisedFns) {
-    t.ok(output[fn])
+  for (let name in promisedFns) {
+    t.ok(output[name], name)
   }
   t.end()
 })
