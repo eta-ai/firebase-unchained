@@ -30,6 +30,20 @@ export function pval (db) {
   })
 }
 
+export function parray (db) {
+  return path => db.pget(path)
+  .then(snap => {
+    if (!snap.hasChildren()) {
+      throw new Error('No child value at this path')
+    }
+    const results = []
+    snap.forEach((childSnap) => {
+      results.push(childSnap.val())
+    })
+    return results
+  })
+}
+
 export function ppush (db) {
   return (path, value) => {
     const ref = path.push ? path : db.child(path)
@@ -51,7 +65,7 @@ export function pset (db) {
   }
 }
 
-function psetWithPriority (db) {
+export function psetWithPriority (db) {
   return function (path, value, priority) {
     var ref = path.setWithPriority ? path : db.child(path)
     return new Promise(function (resolve, reject) {
@@ -84,6 +98,7 @@ export default function promisifyFirebase (db) {
     pauthWithCustomToken,
     pget,
     pval,
+    parray,
     ppush,
     pset,
     psetWithPriority,
