@@ -67,12 +67,19 @@ export function pset (db) {
 
 export function psetWithPriority (db) {
   return function (path, value, priority) {
-    var ref = path.setWithPriority ? path : db.child(path)
+    const ref = path.setWithPriority ? path : db.child(path)
     return new Promise(function (resolve, reject) {
       ref.setWithPriority(value, priority, function (err) {
         return err ? reject(err) : resolve()
       })
     })
+  }
+}
+
+export function psetPriority (db) {
+  return (path, priority) => {
+    const ref = path.setPriority ? path : db.child(path)
+    return ref.setPriority(priority)
   }
 }
 
