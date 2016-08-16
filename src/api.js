@@ -19,6 +19,17 @@ export function pget (db) {
   }
 }
 
+export function pexportVal (db) {
+  return (path) => db.pget(path)
+    .then((snap) => {
+      const val = snap.exportVal()
+      if (val === null) {
+        throw new Error('No value at this path')
+      }
+      return val
+    })
+}
+
 export function pval (db) {
   return (path) => db.pget(path)
     .then((snap) => {
