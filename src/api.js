@@ -58,12 +58,12 @@ export function parray (db) {
 export function ppush (db) {
   return (path, value) => {
     const ref = path.push ? path : db.child(path)
-    if (value) {
-      return new Promise((resolve, reject) => {
-        ref.push(value, (err) => err ? reject(err) : resolve())
-      })
+    if (arguments.length < 2) {
+      return Promise.resolve(ref.push())
     }
-    return Promise.resolve(ref.push())
+    return new Promise((resolve, reject) => {
+      ref.push(value, (err) => err ? reject(err) : resolve())
+    })
   }
 }
 
