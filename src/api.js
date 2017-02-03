@@ -56,7 +56,7 @@ export function parray (db) {
 }
 
 export function ppush (db) {
-  return (path, value) => {
+  return function ppush (path, value) {
     const ref = path.push ? path : db.child(path)
     if (arguments.length < 2) {
       return Promise.resolve(ref.push())
