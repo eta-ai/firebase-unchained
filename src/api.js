@@ -118,3 +118,13 @@ export function generateId (db) {
     return ref.push().key()
   }
 }
+
+export function query (db) {
+  return (path, options = {}) => {
+    const ref = path.child ? path : db.child(path)
+    return Object.keys(options).reduce((query, option) => {
+      const value = options[option]
+      return query[option].call(query, value)
+    }, ref)
+  }
+}
