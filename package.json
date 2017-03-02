@@ -17,6 +17,9 @@
   },
   "author": "Seggy Umboh <sumboh@eta.ai>",
   "license": "ISC",
+  "peerDependencies": {
+    "firebase": ">= 2.4.0 < 3"
+  },
   "devDependencies": {
     "babel-cli": "^6.3.17",
     "babel-eslint": "^4.1.6",
