@@ -1,7 +1,7 @@
 {
   "name": "firebase-unchained",
   "version": "1.5.0",
-  "description": "Promise version of Firebase API without chaining",
+  "description": "Firebase API without chaining",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -17,6 +17,9 @@
   },
   "author": "Seggy Umboh <sumboh@eta.ai>",
   "license": "ISC",
+  "peerDependencies": {
+    "firebase": ">= 2.4.0 < 3"
+  },
   "devDependencies": {
     "babel-cli": "^6.3.17",
     "babel-eslint": "^4.1.6",

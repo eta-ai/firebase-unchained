@@ -13,9 +13,7 @@ export function pauthWithCustomToken (db) {
 export function pget (db) {
   return (path) => {
     const ref = path.once ? path : db.child(path)
-    return new Promise((resolve, reject) => {
-      ref.once('value', resolve, reject)
-    })
+    return ref.once('value')
   }
 }
 
@@ -43,32 +41,21 @@ export function parray (db) {
 export function ppush (db) {
   return function ppush (path, value) {
     const ref = path.push ? path : db.child(path)
-    if (arguments.length < 2) {
-      return Promise.resolve(ref.push())
-    }
-    return new Promise((resolve, reject) => {
-      ref.push(value, (err) => err ? reject(err) : resolve())
-    })
+    return ref.push(value)
   }
 }
 
 export function pset (db) {
   return (path, value) => {
     const ref = path.set ? path : db.child(path)
-    return new Promise((resolve, reject) => {
-      ref.set(value, (err) => err ? reject(err) : resolve())
-    })
+    return ref.set(value)
   }
 }
 
 export function psetWithPriority (db) {
   return function (path, value, priority) {
     const ref = path.setWithPriority ? path : db.child(path)
-    return new Promise(function (resolve, reject) {
-      ref.setWithPriority(value, priority, function (err) {
-        return err ? reject(err) : resolve()
-      })
-    })
+    return ref.setWithPriority(value, priority)
   }
 }
 
@@ -82,18 +69,14 @@ export function psetPriority (db) {
 export function pupdate (db) {
   return (path, value) => {
     const ref = path.update ? path : db.child(path)
-    return new Promise((resolve, reject) => {
-      ref.update(value, (err) => err ? reject(err) : resolve())
-    })
+    return ref.update(value)
   }
 }
 
 export function premove (db) {
   return (path) => {
     const ref = path.remove ? path : db.child(path)
-    return new Promise((resolve, reject) => {
-      ref.remove((err) => err ? reject(err) : resolve())
-    })
+    return ref.remove()
   }
 }
 
