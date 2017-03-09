@@ -21,32 +21,17 @@ export function pget (db) {
 
 export function pexportVal (db) {
   return (path) => db.pget(path)
-    .then((snap) => {
-      const val = snap.exportVal()
-      if (val === null) {
-        throw new Error('No value at this path')
-      }
-      return val
-    })
+    .then((snap) => snap.exportVal())
 }
 
 export function pval (db) {
   return (path) => db.pget(path)
-    .then((snap) => {
-      const val = snap.val()
-      if (val === null) {
-        throw new Error('No value at this path')
-      }
-      return val
-    })
+    .then((snap) => snap.val())
 }
 
 export function parray (db) {
   return (path) => db.pget(path)
     .then((snap) => {
-      if (!snap.hasChildren()) {
-        throw new Error('No child value at this path')
-      }
       const results = []
       snap.forEach((childSnap) => {
         results.push(childSnap.val())
@@ -124,7 +109,7 @@ export function query (db) {
     const ref = path.child ? path : db.child(path)
     return Object.keys(options).reduce((query, option) => {
       const value = options[option]
-      return query[option].call(query, value)
+      return query[option](value)
     }, ref)
   }
 }
