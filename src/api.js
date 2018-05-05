@@ -92,7 +92,9 @@ export function query (db) {
     const ref = path.child ? path : db.child(path)
     return Object.keys(options).reduce((query, option) => {
       const value = options[option]
-      return query[option](value)
+      return typeof value === 'undefined'
+        ? query[option]()
+        : query[option](value)
     }, ref)
   }
 }
