@@ -14,39 +14,28 @@ test("unchainFirebase adds methods to object", function(t) {
 });
 
 test("unchainFirebase partially applies db", function(t) {
-  const key = "key";
-  const input = {
-    push: function() {
-      return key;
-    }
-  };
+  const path = "path/to/value";
+  const value = { key: "key" };
+  const push = stub().returns(value);
+  const ref = stub().returns({ push });
+  const input = { push, ref };
   const output = unchainFirebase(input);
-  const expected = key;
-  const out = output.ppush(input);
-  if (out.then) {
-    out
-      .then(function(actual) {
-        t.equal(actual, expected);
-        t.end();
-      })
-      .catch(function(err) {
-        t.end(err);
-      });
-  } else {
-    const actual = out;
-    t.equal(actual, expected);
-    t.end();
-  }
+  const expected = value.key;
+  const actual = output.generateId(path);
+  t.equal(actual, expected);
+  t.deepEqual(ref.args, [[path]], "ref args");
+  t.deepEqual(push.args, [[]], "push args");
+  t.end();
 });
 
 test("query supports nullary options", function(t) {
-  const path = "/the/path";
+  const path = "the/path";
   const ref = {
     orderByPriority: stub().returnsThis(),
     startAt: stub().returnsThis()
   };
   const db = {
-    child: stub().returns(ref)
+    ref: stub().returns(ref)
   };
   const expected = ref;
   const actual = unchainedFns.query(db)(path, {
@@ -54,7 +43,7 @@ test("query supports nullary options", function(t) {
     startAt: 1
   });
   t.equal(actual, expected, "output");
-  t.deepEqual(db.child.args, [[path]], "child");
+  t.deepEqual(db.ref.args, [[path]], "child");
   t.deepEqual(ref.orderByPriority.args, [[]], "nullary");
   t.deepEqual(ref.startAt.args, [[1]], "unary");
   t.end();
