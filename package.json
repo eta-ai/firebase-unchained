@@ -2,7 +2,7 @@
   "name": "firebase-unchained",
   "version": "3.0.0",
   "description": "Firebase API without chaining",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/eta-ai/firebase-unchained.git"
@@ -13,9 +13,6 @@
   },
   "author": "Seggy Umboh <sumboh@eta.ai>",
   "license": "ISC",
-  "peerDependencies": {
-    "firebase": "5.x.x"
-  },
   "devDependencies": {
     "prettier": "1.14.3",
     "sinon": "7.1.1",
