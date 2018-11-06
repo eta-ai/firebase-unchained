@@ -1,6 +1,6 @@
 {
   "name": "firebase-unchained",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Firebase API without chaining",
   "main": "src/index.js",
   "repository": {
