@@ -1,100 +1,103 @@
-export function pauthWithCustomToken (db) {
-  return (token, options) => new Promise((resolve, reject) => {
-    db.authWithCustomToken(token, (err, authData) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(authData)
-      }
-    }, options)
-  })
+function isString(obj) {
+  return Object.prototype.toString.call(obj) === "[object String]";
 }
 
-export function pget (db) {
-  return (path) => {
-    const ref = path.once ? path : db.child(path)
-    return ref.once('value')
-  }
+function ensureRef(db, pathOrRef) {
+  return isString(pathOrRef) ? db.ref(pathOrRef) : pathOrRef;
 }
 
-export function pexportVal (db) {
-  return (path) => db.pget(path)
-    .then((snap) => snap.exportVal())
-}
+exports.child = function(db) {
+  return function child(path) {
+    return db.ref(path);
+  };
+};
 
-export function pval (db) {
-  return (path) => db.pget(path)
-    .then((snap) => snap.val())
-}
+exports.generateId = function(db) {
+  return function generateId(pathInput) {
+    const path = pathInput || "/";
+    return ensureRef(db, path).push().key;
+  };
+};
 
-export function parray (db) {
-  return (path) => db.pget(path)
-    .then((snap) => {
-      const results = []
-      snap.forEach((childSnap) => {
-        results.push(childSnap.val())
-      })
-      return results
-    })
-}
+exports.parray = function(db) {
+  return function parray(path) {
+    return db.pget(path).then(function(snap) {
+      const results = [];
+      snap.forEach(function(childSnap) {
+        results.push(childSnap.val());
+      });
+      return results;
+    });
+  };
+};
 
-export function ppush (db) {
-  return function ppush (path, value) {
-    const ref = path.push ? path : db.child(path)
-    return ref.push(value)
-  }
-}
+exports.pexportVal = function(db) {
+  return function pexportVal(path) {
+    return db.pget(path).then(function(snap) {
+      return snap.exportVal();
+    });
+  };
+};
 
-export function pset (db) {
-  return (path, value) => {
-    const ref = path.set ? path : db.child(path)
-    return ref.set(value)
-  }
-}
+exports.pget = function(db) {
+  return function pget(path) {
+    return ensureRef(db, path).once("value");
+  };
+};
 
-export function psetWithPriority (db) {
-  return function (path, value, priority) {
-    const ref = path.setWithPriority ? path : db.child(path)
-    return ref.setWithPriority(value, priority)
-  }
-}
+exports.ppush = function(db) {
+  return function ppush(path, value) {
+    return ensureRef(db, path).push(value);
+  };
+};
 
-export function psetPriority (db) {
-  return (path, priority) => {
-    const ref = path.setPriority ? path : db.child(path)
-    return ref.setPriority(priority)
-  }
-}
+exports.premove = function(db) {
+  return function premove(path) {
+    return ensureRef(db, path).remove();
+  };
+};
 
-export function pupdate (db) {
-  return (path, value) => {
-    const ref = path.update ? path : db.child(path)
-    return ref.update(value)
-  }
-}
+exports.pset = function(db) {
+  return function pset(path, value) {
+    return ensureRef(db, path).set(value);
+  };
+};
 
-export function premove (db) {
-  return (path) => {
-    const ref = path.remove ? path : db.child(path)
-    return ref.remove()
-  }
-}
+exports.psetPriority = function psetPriorityFromDb(db) {
+  return function psetPriority(path, priority) {
+    return ensureRef(db, path).setPriority(priority);
+  };
+};
 
-export function generateId (db) {
-  return (path = '/') => {
-    const ref = path.push ? path : db.child(path)
-    return ref.push().key()
-  }
-}
+exports.psetWithPriority = function(db) {
+  return function(path, value, priority) {
+    return ensureRef(db, path).setWithPriority(value, priority);
+  };
+};
 
-export function query (db) {
-  return (path, options = {}) => {
-    const ref = path.child ? path : db.child(path)
-    return Object.keys(options).reduce((query, option) => {
-      const value = options[option]
-      return typeof value === 'undefined'
+exports.pupdate = function(db) {
+  return function pupdate(path, value) {
+    return ensureRef(db, path).update(value);
+  };
+};
+
+exports.pval = function(db) {
+  return function pval(path) {
+    return db.pget(path).then(function(snap) {
+      return snap.val();
+    });
+  };
+};
+
+exports.query = function(db) {
+  return function query(path, optionsInput) {
+    const options = optionsInput || {};
+    const ref = ensureRef(db, path);
+    return Object.keys(options).reduce(function(query, option) {
+      const value = options[option];
+      return typeof value === "undefined"
         ? query[option]()
-        : query[option](value)
-    }, ref)
-  }
-}
+        : query[option](value);
+    }, ref);
+  };
+};

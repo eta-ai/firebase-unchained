@@ -2,39 +2,20 @@
   "name": "firebase-unchained",
   "version": "2.1.0",
   "description": "Firebase API without chaining",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/eta-ai/firebase-unchained.git"
   },
   "scripts": {
-    "build": "babel src -d lib",
-    "faucet": "npm run tape | faucet",
-    "prepublish": "npm run build",
-    "standard": "standard",
-    "tape": "babel-tape-runner 'tests/**/*.js'",
-    "test": "npm run faucet && npm run standard"
+    "prettier": "prettier --write '{src,tests}/**/*.js'",
+    "test": "tape 'tests/**/*.js'"
   },
   "author": "Seggy Umboh <sumboh@eta.ai>",
   "license": "ISC",
-  "peerDependencies": {
-    "firebase": ">= 2.4.0 < 3"
-  },
   "devDependencies": {
-    "babel-cli": "^6.3.17",
-    "babel-eslint": "^4.1.6",
-    "babel-plugin-syntax-async-functions": "^6.3.13",
-    "babel-plugin-syntax-object-rest-spread": "^6.3.13",
-    "babel-plugin-transform-object-rest-spread": "^6.3.13",
-    "babel-plugin-transform-regenerator": "^6.3.18",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-tape-runner": "^2.0.0",
-    "faucet": "0.0.1",
-    "sinon": "^5.0.3",
-    "standard": "^5.4.1",
-    "tape": "^4.2.2"
-  },
-  "standard": {
-    "parser": "babel-eslint"
+    "prettier": "1.14.3",
+    "sinon": "7.1.1",
+    "tape": "4.9.1"
   }
 }

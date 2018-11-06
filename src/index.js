@@ -1,9 +1,9 @@
-import * as api from './api'
+const api = require("./api");
 
-export default function promisifyFirebase (db) {
-  Object.keys(api).forEach((name) => {
-    const fn = api[name]
-    db[name] = fn(db)
-  })
-  return db
-}
+module.exports = function unchainFirebase(db) {
+  Object.keys(api).forEach(function(name) {
+    const fn = api[name];
+    db[name] = fn(db);
+  });
+  return db;
+};
