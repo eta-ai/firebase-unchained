@@ -1,31 +1,45 @@
-import test from 'tape'
-import { stub } from 'sinon'
+const test = require('tape')
+const { stub } = require('sinon')
 
-import promisify from '../src'
-import * as promisedFns from '../src/api'
+const unchainFirebase = require('../src')
+const unchainedFns = require('../src/api')
 
-test('promisify adds methods to object', t => {
+test('unchainFirebase adds methods to object', function (t) {
   const input = {}
-  const output = promisify(input)
-  for (let name in promisedFns) {
+  const output = unchainFirebase(input)
+  for (let name in unchainedFns) {
     t.ok(output[name], name)
   }
   t.end()
 })
 
-test('promisify partially applies db', async t => {
+test('unchainFirebase partially applies db', function (t) {
   const key = 'key'
   const input = {
-    push: () => key
+    push: function () {
+      return key
+    }
   }
-  const output = promisify(input)
+  const output = unchainFirebase(input)
   const expected = key
-  const actual = await output.ppush(input)
-  t.equal(actual, expected)
-  t.end()
+  const out = output.ppush(input)
+  if (out.then) {
+    out
+      .then(function (actual) {
+        t.equal(actual, expected)
+        t.end()
+      })
+      .catch(function (err) {
+        t.end(err)
+      })
+  } else {
+    const actual = out
+    t.equal(actual, expected)
+    t.end()
+  }
 })
 
-test('query supports nullary options', async t => {
+test('query supports nullary options',  function (t) {
   const path = '/the/path'
   const ref = {
     orderByPriority: stub().returnsThis(),
@@ -35,7 +49,7 @@ test('query supports nullary options', async t => {
     child: stub().returns(ref)
   }
   const expected = ref
-  const actual = promisedFns.query(db)(path, {
+  const actual = unchainedFns.query(db)(path, {
     orderByPriority: undefined,
     startAt: 1
   })
